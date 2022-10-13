@@ -10,8 +10,8 @@ NAME_ID=$($PSQL "SELECT id FROM users WHERE name='$NAME'")
 if [[ -z $NAME_ID ]]
 then
   echo -e "Welcome, $NAME! It looks like this is your first time here."
-  PSQL "insert into users(name) values ('$NAME');"
-  #echo -e PSQL "insert into users(name) values ('$NAME');"
+  INSERT_NAME=$($PSQL "insert into users(name) values ('$NAME')")
+  NAME_ID=$($PSQL "SELECT id FROM users WHERE name='$NAME'")
 else
   # get games played
   GAMES_PLAYED=$($PSQL "select COUNT(guessed) from games where id=$NAME_ID;")
@@ -37,10 +37,13 @@ GAME() {
       echo -e "It's higher than that, guess again:"
       read GUESSED_NUMBER
       ((COUNT+=1))
-    elif [[ $SECRET_NUMBER < $GUESSED_NUMBER ]]
-      echo -e "It's lower than that, guess again:"
-      read GUESSED_NUMBER
-      ((COUNT+=1))      
+    else
+      if [[ $SECRET_NUMBER < $GUESSED_NUMBER ]]
+        then
+          echo -e "It's lower than that, guess again:"
+          read GUESSED_NUMBER
+          ((COUNT+=1))  
+      fi    
     fi
   fi
 }
@@ -50,3 +53,4 @@ do
   GAME
 done
 echo -e "You guessed it in $COUNT tries. The secret number was $SECRET_NUMBER. Nice job!"
+INSERT_GAME=$($PSQL "insert into games(id, guessed) values ($NAME_ID, $COUNT)")
