@@ -27,28 +27,26 @@ read GUESSED_NUMBER
 ((COUNT+=1))
 
 GAME() {
-  if [[ ! $GUESSED_NUMBER =~ '^[0-9]+$' ]]
+  if [[ ! $GUESSED_NUMBER =~ ^[0-9]+$ ]]
   then
-    echo -e "That is not an integer, guess again:"
+    echo -e "$GUESSED_NUMBER is not an integer, guess again:"
     read GUESSED_NUMBER
-    
   else
-    if (( $SECRET_NUMBER > $GUESSED_NUMBER ))
+    if [[ $SECRET_NUMBER > $GUESSED_NUMBER ]]
     then
-      echo -e "It's lower than that, guess again:"
-      read GUESSED_NUMBER
-      ((COUNT+=1))
-    elif (( $SECRET_NUMBER < $GUESSED_NUMBER ))
       echo -e "It's higher than that, guess again:"
       read GUESSED_NUMBER
       ((COUNT+=1))
-    else
-      echo -e "You guessed it in $COUNT tries. The secret number was $SECRET_NUMBER. Nice job!"
+    elif [[ $SECRET_NUMBER < $GUESSED_NUMBER ]]
+      echo -e "It's lower than that, guess again:"
+      read GUESSED_NUMBER
+      ((COUNT+=1))      
     fi
   fi
 }
 
-while (( ! $SECRET_NUMBER = $GUESSED_NUMBER ))
+while [[ $SECRET_NUMBER -ne $GUESSED_NUMBER ]]
 do
   GAME
 done
+echo -e "You guessed it in $COUNT tries. The secret number was $SECRET_NUMBER. Nice job!"
