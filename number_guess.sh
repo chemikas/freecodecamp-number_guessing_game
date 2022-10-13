@@ -22,14 +22,11 @@ fi
 SECRET_NUMBER=$(( $RANDOM % 1000 + 1 ))
 COUNT=0
 
-echo -e "Guess the secret number between 1 and 1000:"
-read GUESSED_NUMBER
-((COUNT+=1))
 
 GAME() {
   if [[ ! $GUESSED_NUMBER =~ ^[0-9]+$ ]]
   then
-    echo -e "$GUESSED_NUMBER is not an integer, guess again:"
+    echo -e "That is not an integer, guess again:"
     read GUESSED_NUMBER
   else
     if [[ $SECRET_NUMBER > $GUESSED_NUMBER ]]
@@ -48,9 +45,19 @@ GAME() {
   fi
 }
 
-while [[ $SECRET_NUMBER -ne $GUESSED_NUMBER ]]
+echo -e "Guess the secret number between 1 and 1000:"
+read GUESSED_NUMBER
+((COUNT+=1))
+END="false"
+
+while [[ $END = "false" ]]
 do
   GAME
+  if [[ $SECRET_NUMBER = $GUESSED_NUMBER ]]
+  then
+    echo -e "You guessed it in $COUNT tries. The secret number was $SECRET_NUMBER. Nice job!"
+    END="true"
+  fi
 done
-echo -e "You guessed it in $COUNT tries. The secret number was $SECRET_NUMBER. Nice job!"
+
 INSERT_GAME=$($PSQL "insert into games(id, guessed) values ($NAME_ID, $COUNT)")
