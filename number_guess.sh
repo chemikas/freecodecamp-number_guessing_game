@@ -21,7 +21,6 @@ fi
 
 SECRET_NUMBER=$(( $RANDOM % 1000 + 1 ))
 number_of_guesses=0
-echo $number_of_guesses
 
 GAME() {
   if [[ ! $GUESSED_NUMBER =~ ^[0-9]+$ ]]
@@ -54,7 +53,6 @@ END="false"
 while [[ $END = "false" ]]
 do
   GAME
-  echo "# guesses - $number_of_guesses"
   if [[ $SECRET_NUMBER = $GUESSED_NUMBER ]]
   then
     echo -e "You guessed it in $number_of_guesses tries. The secret number was $SECRET_NUMBER. Nice job!"
